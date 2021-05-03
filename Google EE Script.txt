@@ -1,0 +1,18 @@
+//var dataset = ee.ImageCollection('COPERNICUS/S2_SR')
+//                .filter(ee.Filter.date('2017-04-01', '2018-07-01'));
+var dataset = ee.ImageCollection('COPERNICUS/S2_SR').select(['B4', 'B3', 'B2'])
+Map.setCenter(-78.614217766, -0.827621582972643, 17);
+
+var temporal_snapshot = dataset.filter(ee.Filter.date('2017-04-01', '2017-09-02'))
+
+
+var sorted = temporal_snapshot.sort('CLOUD_COVER')
+
+var scene = sorted.first();
+
+Export.image.toDrive({
+  image: scene,
+  description: 'imageToDriveExample',
+  scale: 30,
+  region: geometry,
+});

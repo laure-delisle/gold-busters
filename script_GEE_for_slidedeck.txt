@@ -1,0 +1,23 @@
+var dataset = ee.ImageCollection('COPERNICUS/S2_SR')
+var lat = -62.194561009;
+var long = -4.47130067985321;
+var center = ee.Geometry.Point(-62.194561009, -4.47130067985321);
+var roi = center.buffer(2000).bounds();
+
+
+var collection = dataset.select(['B4', 'B3', 'B2'])
+  .filterBounds(center)
+  .filter(ee.Filter.date('2019-03-04', '2019-03-13'));
+
+// Get least cloudy
+var scene = collection.sort('CLOUD_COVER').first();
+var image = ee.Image(scene);
+
+Map.setCenter(lat, long, 10);
+Map.addLayer(image, {bands: ['B4', 'B3', 'B2'], max: 3000}, 'image');
+
+// ROI
+//Map.addLayer(image.clip(roi), {bands: ['B4', 'B3', 'B2'], max: 3000}, 'image')
+
+//Map.addLayer(roi, {color: 'FF0000'})
+Map.addLayer(center, {color: 'FF0000'});
